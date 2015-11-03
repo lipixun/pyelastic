@@ -88,7 +88,7 @@ class DocCorrelation(object):
         """
         return DocCorrelation(list(reversed(self.path)))
 
-    def getQuery(self, query):
+    def getQuery(self, query, scoreMode = None, minChildren = None, maxChildren = None, innerHits = None):
         """Get the query from current document correlation
         More explanation:
             Suppose the path is from document A to document B, when we get query according to this correlation, that means:
@@ -98,9 +98,9 @@ class DocCorrelation(object):
         """
         for node in reversed(self.path):
             if isinstance(node, ParentPathNode):
-                query = HasParentQuery(node.name, query)
+                query = HasParentQuery(node.name, query, scoreMode, innerHits)
             else:
-                query = HasChildQuery(node.name, query)
+                query = HasChildQuery(node.name, query, scoreMode, minChildren, maxChildren, innerHits)
         return query
 
     @classmethod

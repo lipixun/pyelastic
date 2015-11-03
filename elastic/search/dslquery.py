@@ -28,29 +28,57 @@ BOOST_MODE_MIN      = 'min'
 class DslQuery(dict):
     """The dsl query root object
     """
-    def __init__(self, name, body):
+    def __init__(self, name, body, matchedName = None):
         """Create a new DslQuery
         """
         self.name = name
         self.body = body
         # Super
         super(DslQuery, self).__init__(**{ name: body })
+        # Matched name
+        if matchedName:
+            self.matchedName = matchedName
+
+    def getTopLevelDefinition(self):
+        """Get the top level definition for the query
+        """
+        return self.body
+
+    @property
+    def matchedName(self):
+        """Get the matched name for this query
+        """
+        return self.getTopLevelDefinition().get('_name')
+
+    @matchedName.setter
+    def matchedName(self, value):
+        """Set the matched name for this query
+        """
+        self.getTopLevelDefinition()['_name'] = value
+
+    @matchedName.deleter
+    def matchedName(self):
+        """Delete the matched name for this query
+        """
+        definition = self.getTopLevelDefinition()
+        if '_name' in definition:
+            del definition['_name']
 
 class MatchAll(DslQuery):
     """Match all query
     """
-    def __init__(self, boost = None):
+    def __init__(self, boost = None, matchedName = None):
         """Create a new MatchAll object
         """
         body = {}
         if not boost is None:
             body['boost'] = boost
-        super(MatchAll, self).__init__('match_all', body)
+        super(MatchAll, self).__init__('match_all', body, matchedName)
 
 class MatchQuery(DslQuery):
     """The match query
     """
-    def __init__(self, field, query, type = None, slop = None):
+    def __init__(self, field, query, type = None, slop = None, matchedName = None):
         """Create a new MatchQuery
         """
         body = { 'query': query }
@@ -60,12 +88,17 @@ class MatchQuery(DslQuery):
             body['slop'] = slop
         body = { field: body }
         # Super
-        super(MatchQuery, self).__init__('match', body)
+        super(MatchQuery, self).__init__('match', body, matchedName)
+
+    def getTopLevelDefinition(self):
+        """Get the top level definition for the query
+        """
+        return self.body.values()[0]
 
 class TermQuery(DslQuery):
     """The term query
     """
-    def __init__(self, field, value, boost = None):
+    def __init__(self, field, value, boost = None, matchedName = None):
         """Create a new TermQuery
         """
         body = { 'value': value }
@@ -73,12 +106,17 @@ class TermQuery(DslQuery):
             body['boost'] = boost
         body = { field: body }
         # Super
-        super(TermQuery, self).__init__('term', body)
+        super(TermQuery, self).__init__('term', body, matchedName)
+
+    def getTopLevelDefinition(self):
+        """Get the top level definition for the query
+        """
+        return self.body.values()[0]
 
 class TermsQuery(DslQuery):
     """The terms query
     """
-    def __init__(self, field, values, boost = None):
+    def __init__(self, field, values, boost = None, matchedName = None):
         """Create a new TermsQuery
         """
         body = { 'value': values }
@@ -86,12 +124,17 @@ class TermsQuery(DslQuery):
             body['boost'] = boost
         body = { field: body }
         # Super
-        super(TermsQuery, self).__init__('terms', body)
+        super(TermsQuery, self).__init__('terms', body, matchedName)
+
+    def getTopLevelDefinition(self):
+        """Get the top level definition for the query
+        """
+        return self.body.values()[0]
 
 class RangeQuery(DslQuery):
     """The range query
     """
-    def __init__(self, field, gt = None, gte = None, lt = None, lte = None, boost = None):
+    def __init__(self, field, gt = None, gte = None, lt = None, lte = None, boost = None, matchedName = None):
         """Create a new RangeQuery
         """
         body = {}
@@ -107,28 +150,33 @@ class RangeQuery(DslQuery):
             body['boost'] = boost
         body = { field: body }
         # Super
-        super(RangeQuery, self).__init__('range', body)
+        super(RangeQuery, self).__init__('range', body, matchedName)
+
+    def getTopLevelDefinition(self):
+        """Get the top level definition for the query
+        """
+        return self.body#.values()[0]
 
 class ExistsQuery(DslQuery):
     """The exists query
     """
-    def __init__(self, field):
+    def __init__(self, field, matchedName = None):
         """Create a new ExistsQuery
         """
-        super(ExistsQuery, self).__init__('exists', { 'field': field })
+        super(ExistsQuery, self).__init__('exists', { 'field': field }, matchedName)
 
 class MissingQuery(DslQuery):
     """The missing query
     """
-    def __init__(self, field):
+    def __init__(self, field, matchedName = None):
         """Create a new MissingQuery
         """
-        super(MissingQuery, self).__init__('missing', { 'field': field })
+        super(MissingQuery, self).__init__('missing', { 'field': field }, matchedName)
 
 class RegexpQuery(DslQuery):
     """The regexp query
     """
-    def __init__(self, field, value, boost = None, flags = None, maxDeterminizedStates = None):
+    def __init__(self, field, value, boost = None, flags = None, maxDeterminizedStates = None, matchedName = None):
         """Create a new RegexpQuery
         """
         body = { 'value': value }
@@ -140,36 +188,41 @@ class RegexpQuery(DslQuery):
             body['max_determinized_states'] = maxDeterminizedStates
         body = { field: body }
         # Super
-        super(RegexpQuery, self).__init__('regexp', body)
+        super(RegexpQuery, self).__init__('regexp', body, matchedName)
+
+    def getTopLevelDefinition(self):
+        """Get the top level definition for the query
+        """
+        return self.body.values()[0]
 
 class IdsQuery(DslQuery):
     """The ids query
     """
-    def __init__(self, values, type = None):
+    def __init__(self, values, type = None, matchedName = None):
         """Create a new IdsQuery
         """
         body = { 'values': values }
         if not type is None:
             body['type'] = type
         # Super
-        super(IdsQuery, self).__init__('ids', body)
+        super(IdsQuery, self).__init__('ids', body, matchedName)
 
 class ConstantScoreQuery(DslQuery):
     """The constant score query
     """
-    def __init__(self, filter, boost = None):
+    def __init__(self, filter, boost = None, matchedName = None):
         """Create a new ConstantScoreQuery
         """
         body = { 'filter': filter }
         if not boost is None:
             body['boost'] = boost
         # Super
-        super(ConstantScoreQuery, self).__init__('constant_score', body)
+        super(ConstantScoreQuery, self).__init__('constant_score', body, matchedName)
 
 class BoolQuery(DslQuery):
     """The bool query
     """
-    def __init__(self, must = None, filter = None, should = None, mustNot = None, boost = None, minimumShouldMatch = None):
+    def __init__(self, must = None, filter = None, should = None, mustNot = None, boost = None, minimumShouldMatch = None, matchedName = None):
         """Create a new BoolQuery
         """
         body = {}
@@ -186,12 +239,12 @@ class BoolQuery(DslQuery):
         if not minimumShouldMatch is None:
             body['minimum_should_match'] = minimumShouldMatch
         # Done
-        super(BoolQuery, self).__init__('bool', body)
+        super(BoolQuery, self).__init__('bool', body, matchedName)
 
 class FunctionScoreQuery(DslQuery):
     """The function score query
     """
-    def __init__(self, query, functions, maxBoost = None, scoreMode = None, boostMode = None, minScore = None, boost = None):
+    def __init__(self, query, functions, maxBoost = None, scoreMode = None, boostMode = None, minScore = None, boost = None, matchedName = None):
         """Create a new FunctionScoreQuery
         """
         body = { 'query': query, 'functions': functions }
@@ -206,7 +259,7 @@ class FunctionScoreQuery(DslQuery):
         if not boost is None:
             body['boost'] = boost
         # Super
-        super(FunctionScoreQuery, self).__init__('function_score', body)
+        super(FunctionScoreQuery, self).__init__('function_score', body, matchedName)
 
 class Function(dict):
     """The function score function
@@ -279,7 +332,7 @@ class RandomFunction(Function):
 class NestedQuery(DslQuery):
     """The nested query
     """
-    def __init__(self, path, query, scoreMode = None, innerHits = None):
+    def __init__(self, path, query, scoreMode = None, innerHits = None, matchedName = None):
         """Create a new NestedQuery
         """
         body = { 'path': path, 'query': query }
@@ -288,7 +341,7 @@ class NestedQuery(DslQuery):
         if not innerHits is None:
             body['inner_hits'] = innerHits
         # Super
-        super(NestedQuery, self).__init__('nested', body)
+        super(NestedQuery, self).__init__('nested', body, matchedName)
 
     @property
     def innerHits(self):
@@ -305,7 +358,7 @@ class NestedQuery(DslQuery):
 class HasChildQuery(DslQuery):
     """The has child query 
     """
-    def __init__(self, type, query, scoreMode = None, minChildren = None, maxChildren = None, innerHits = None):
+    def __init__(self, type, query, scoreMode = None, minChildren = None, maxChildren = None, innerHits = None, matchedName = None):
         """Create a new HasChildQuery
         """
         body = { 'type': type, 'query': query }
@@ -318,7 +371,7 @@ class HasChildQuery(DslQuery):
         if not innerHits is None:
             body['inner_hits'] = innerHits
         # Super
-        super(HasChildQuery, self).__init__('has_child', body)
+        super(HasChildQuery, self).__init__('has_child', body, matchedName)
     
     @property
     def innerHits(self):
@@ -335,7 +388,7 @@ class HasChildQuery(DslQuery):
 class HasParentQuery(DslQuery):
     """The has parent query 
     """
-    def __init__(self, type, query, scoreMode = None, innerHits = None):
+    def __init__(self, type, query, scoreMode = None, innerHits = None, matchedName = None):
         """Create a new HasParentQuery
         """
         body = { 'type': type, 'query': query }
@@ -344,7 +397,7 @@ class HasParentQuery(DslQuery):
         if not innerHits is None:
             body['inner_hits'] = innerHits
         # Super
-        super(HasParentQuery, self).__init__('has_parent', body)
+        super(HasParentQuery, self).__init__('has_parent', body, matchedName)
     
     @property
     def innerHits(self):
