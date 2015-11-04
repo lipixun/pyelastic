@@ -18,7 +18,6 @@ class Highlighter(dict):
     """
     def __init__(
             self,
-            field,
             type = None,
             forceSource = None,
             fragmentSize = None,
@@ -34,7 +33,6 @@ class Highlighter(dict):
             ):
         """Create a new Highlighter
         """
-        self.field = field
         # Add attrs
         attrs = {}
         if type:

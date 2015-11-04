@@ -25,6 +25,9 @@ BOOST_MODE_FIRST    = 'first'
 BOOST_MODE_MAX      = 'max'
 BOOST_MODE_MIN      = 'min'
 
+MATCH_OPT_AND       = 'and'
+MATCH_OPT_OR        = 'or'
+
 class DslQuery(dict):
     """The dsl query root object
     """
@@ -78,12 +81,14 @@ class MatchAll(DslQuery):
 class MatchQuery(DslQuery):
     """The match query
     """
-    def __init__(self, field, query, type = None, slop = None, matchedName = None):
+    def __init__(self, field, query, type = None, operator = None, slop = None, matchedName = None):
         """Create a new MatchQuery
         """
         body = { 'query': query }
         if type:
             body['type'] = type
+        if operator:
+            body['operator'] = operator
         if not slop is None:
             body['slop'] = slop
         body = { field: body }
