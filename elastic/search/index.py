@@ -12,7 +12,7 @@
 from sets import Set
 from collections import namedtuple
 
-from dslquery import HasChildQuery, HasParentQuery 
+from dslquery import HasChildQuery, HasParentQuery
 
 class Index(object):
     """The index
