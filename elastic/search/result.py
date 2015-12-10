@@ -44,6 +44,12 @@ class Result(dict):
             else:
                 return hits
 
+    @property
+    def aggs(self):
+        """Get the aggregation results
+        """
+        return self.get('aggregations')
+
 class HitItem(dict):
     """The hitted item
     """
