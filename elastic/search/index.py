@@ -88,14 +88,22 @@ class DocCorrelation(object):
         """
         return DocCorrelation(list(reversed(self.path)))
 
-    def getQuery(self, query, scoreMode = None, minChildren = None, maxChildren = None, innerHits = None):
+    def getQuery(self, query, scoreMode = None, minChildren = None, maxChildren = None, innerHits = None, namedFunc = None):
         """Get the query from current document correlation
         More explanation:
             Suppose the path is from document A to document B, when we get query according to this correlation, that means:
             We are currently searching the document A and have a query must be matched in B
+        Parameters:
+            query                       The query to wrap
+            scoreMode                   The score mode
+            minChildren                 The min children number
+            maxChildren                 The max children number
+            innerHits                   The inner hits config
+            namedFunc                   A function to name the generated query, the function has one parameter - The generated query, returns the name
         Returns:
             The DslQuery (The HasParentQuery or HasChildQuery)
         """
+        # TODO: Add inner hits chain implementation
         for node in reversed(self.path):
             if isinstance(node, ParentPathNode):
                 query = HasParentQuery(node.name, query, scoreMode, innerHits)

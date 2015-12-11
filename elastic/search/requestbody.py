@@ -21,7 +21,7 @@ class Highlighter(dict):
             type = None,
             forceSource = None,
             fragmentSize = None,
-            fragmentNumber = None, 
+            fragmentNumber = None,
             fragmentOffset = None,
             noMatchSize = None,
             requireFieldMatch = None,

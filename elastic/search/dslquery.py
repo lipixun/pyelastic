@@ -361,7 +361,7 @@ class NestedQuery(DslQuery):
         self.body['inner_hits'] = value
 
 class HasChildQuery(DslQuery):
-    """The has child query 
+    """The has child query
     """
     def __init__(self, type, query, scoreMode = None, minChildren = None, maxChildren = None, innerHits = None, matchedName = None):
         """Create a new HasChildQuery
@@ -377,7 +377,7 @@ class HasChildQuery(DslQuery):
             body['inner_hits'] = innerHits
         # Super
         super(HasChildQuery, self).__init__('has_child', body, matchedName)
-    
+
     @property
     def innerHits(self):
         """Get the inner hits
@@ -391,7 +391,7 @@ class HasChildQuery(DslQuery):
         self.body['inner_hits'] = value
 
 class HasParentQuery(DslQuery):
-    """The has parent query 
+    """The has parent query
     """
     def __init__(self, type, query, scoreMode = None, innerHits = None, matchedName = None):
         """Create a new HasParentQuery
@@ -403,7 +403,7 @@ class HasParentQuery(DslQuery):
             body['inner_hits'] = innerHits
         # Super
         super(HasParentQuery, self).__init__('has_parent', body, matchedName)
-    
+
     @property
     def innerHits(self):
         """Get the inner hits
