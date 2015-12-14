@@ -67,7 +67,7 @@ class DslQuery(dict):
         if '_name' in definition:
             del definition['_name']
 
-class MatchAll(DslQuery):
+class MatchAllQuery(DslQuery):
     """Match all query
     """
     def __init__(self, boost = None, matchedName = None):
@@ -76,7 +76,7 @@ class MatchAll(DslQuery):
         body = {}
         if not boost is None:
             body['boost'] = boost
-        super(MatchAll, self).__init__('match_all', body, matchedName)
+        super(MatchAllQuery, self).__init__('match_all', body, matchedName)
 
 class MatchQuery(DslQuery):
     """The match query
