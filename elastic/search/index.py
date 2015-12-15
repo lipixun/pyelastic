@@ -14,6 +14,12 @@ from collections import namedtuple
 
 from dslquery import HasChildQuery, HasParentQuery
 
+SCORE_MODE_NONE = 'none'
+SCORE_MODE_SUM = 'sum'
+SCORE_MODE_MAX = 'max'
+SCORE_MODE_TOTAL = 'total'
+SCORE_MODE_AVG = 'avg'
+
 class Index(object):
     """The index
     """

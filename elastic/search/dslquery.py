@@ -19,6 +19,7 @@ SCORE_MODE_AVG      = 'avg'
 SCORE_MODE_NONE     = 'none'
 
 BOOST_MODE_MUL      = 'multiply'
+BOOST_MODE_REP      = 'replace'
 BOOST_MODE_SUM      = 'sum'
 BOOST_MODE_AVG      = 'avg'
 BOOST_MODE_FIRST    = 'first'
