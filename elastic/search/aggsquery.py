@@ -21,7 +21,7 @@ class AggQuery(dict):
         self._body = body
         self._children = children or {}
         # Super
-        super(AggQuery, self).__init__({ name: { self.TYPENAME: self._body, 'aggs': self._children } })
+        super(AggQuery, self).__init__({ self.TYPENAME: self._body, 'aggs': self._children })
 
     @property
     def name(self):
@@ -40,6 +40,13 @@ class AggQuery(dict):
         """Get child aggregations
         """
         return self._children
+
+    def addSubAggregation(self, aggQuery):
+        """Add a sub aggregation
+        """
+        if aggQuery.name in self._children:
+            raise ValueError('Conflict aggregation name [%s]' % aggQuery.name)
+        self._children[aggQuery.name] = aggQuery
 
 # -*- ---------- Metrics aggregations --------- -*-
 
@@ -150,6 +157,8 @@ class HistogramAgg(AggQuery):
 
 class RangeAgg(AggQuery):
     """The range aggregation
+    NOTE:
+        The range from a to b is [a, b)
     """
     TYPENAME = 'range'
 
