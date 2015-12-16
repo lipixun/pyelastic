@@ -14,14 +14,23 @@
 class AggQuery(dict):
     """The aggregation query
     """
+    SUPPORT_SUB_AGG = True
+
     def __init__(self, name, body, children = None):
         """Create a new AggsQuery
         """
         self._name = name
         self._body = body
-        self._children = children or {}
-        # Super
-        super(AggQuery, self).__init__({ self.TYPENAME: self._body, 'aggs': self._children })
+        if self.SUPPORT_SUB_AGG:
+            self._children = children or {}
+            # Super
+            super(AggQuery, self).__init__({ self.TYPENAME: self._body, 'aggs': self._children })
+        else:
+            self._children = None
+            if children:
+                raise ValueError('Aggregation [%s] donnot support sub aggregation' % self.TYPENAME)
+            # Super
+            super(AggQuery, self).__init__({ self.TYPENAME: self._body })
 
     @property
     def name(self):
@@ -44,6 +53,8 @@ class AggQuery(dict):
     def addSubAggregation(self, aggQuery):
         """Add a sub aggregation
         """
+        if not self.SUPPORT_SUB_AGG:
+            raise ValueError('Aggregation [%s] donnot support sub aggregation' % self.TYPENAME)
         if aggQuery.name in self._children:
             raise ValueError('Conflict aggregation name [%s]' % aggQuery.name)
         self._children[aggQuery.name] = aggQuery
@@ -54,6 +65,7 @@ class AvgAgg(AggQuery):
     """The avg aggregation
     """
     TYPENAME = 'avg'
+    SUPPORT_SUB_AGG = False
 
     def __init__(self, name, field = None, script = None, missing = None, children = None):
         """Create a new AvgAggs
@@ -67,6 +79,23 @@ class AvgAgg(AggQuery):
             body['missing'] = missing
         # Super
         super(AvgAgg, self).__init__(name, body, children)
+
+class SumAgg(AggQuery):
+    """The sum aggregation
+    """
+    TYPENAME = 'sum'
+    SUPPORT_SUB_AGG = False
+
+    def __init__(self, name, field = None, script = None, children = None):
+        """Create a new SumAgg
+        """
+        body = {}
+        if field:
+            body['field'] = field
+        if script:
+            body['script'] = script
+        # Super
+        super(SumAgg, self).__init__(name, body, children)
 
 # -*- --------- Bucket Aggregations --------- -*-
 
@@ -94,10 +123,14 @@ class DateHistogramAgg(AggQuery):
     """
     TYPENAME = 'date_histogram'
 
-    def __init__(self, name, field, interval, children = None):
+    def __init__(self, name, field, interval, format = None, children = None):
         """Create a new DateHistogramAgg object
         """
-        super(DateHistogramAgg, self).__init__(name, { 'field': field, 'interval': interval }, children)
+        body = { 'field': field, 'interval': interval }
+        if format:
+            body['format'] = format
+        # Super
+        super(DateHistogramAgg, self).__init__(name, body, children)
 
 class DateRangeAgg(AggQuery):
     """The date range aggregation
