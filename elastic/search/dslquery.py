@@ -335,6 +335,35 @@ class RandomFunction(Function):
         """
         super(RandomFunction, self).__init__('random_score', { 'seed': seed } if not seed is None else {}, filter, weight)
 
+DECAY_FUNCTION_GAUSS    = 'gauss'
+DECAY_FUNCTION_EXP      = 'exp'
+DECAY_FUNCTION_LINEAR   = 'linear'
+
+DECAY_FUNCTION_MULTI_VALUE_MODE_MIN         = 'min'
+DECAY_FUNCTION_MULTI_VALUE_MODE_MAX         = 'max'
+DECAY_FUNCTION_MULTI_VALUE_MODE_AVG         = 'avg'
+DECAY_FUNCTION_MULTI_VALUE_MODE_SUM         = 'sum'
+
+class DecayFunction(Function):
+    """The decay function
+    """
+    def __init__(self, decayFunctionName, field, origin = None, scale = None, offset = None, decay = None, multiValueMode = None, filter = None, weight = None):
+        """Create a new DecayFunction
+        """
+        body = {}
+        if not origin is None:
+            body['origin'] = origin
+        if not scale is None:
+            body['scale'] = scale
+        if not offset is None:
+            body['offset'] = offset
+        if not decay is None:
+            body['decay'] = decay
+        if not multiValueMode is None:
+            body['multi_value_mode'] = multiValueMode
+        # Super
+        super(DecayFunction, self).__init__(decayFunctionName, { field: body }, filter, weight)
+
 class NestedQuery(DslQuery):
     """The nested query
     """
