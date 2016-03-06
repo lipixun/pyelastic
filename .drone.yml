@@ -1,0 +1,38 @@
+build:
+    test:
+        image: dockerdist.bdmd.com/cloudbase:latest
+        pull: true
+        commands:
+            - ./test.sh
+    build:
+        image: dockerdist.bdmd.com/cloudbase:latest
+        pull: true
+        commands:
+            - ./build.sh
+        when:
+            event: push
+            repo: lipixun/pyelastic
+deploy:
+    rsync:
+        user: ol_pyelastic
+        host: openlight-buildrepo.bdmd.com
+        port: 2222
+        source: dist/
+        target: ~/$$COMMIT
+        delete: true
+        recursive: true
+        when:
+            event: push
+            repo: lipixun/pyelastic
+notify:
+    webhook:
+        method: POST
+        urls:
+            - http://openlight-api.bdmd.com/v1/build/hook
+        content_type: application/json
+        header:
+            X-Project-ID: pyelastic
+        when:
+            success: true
+            event: push
+            repo: lipixun/pyelastic
