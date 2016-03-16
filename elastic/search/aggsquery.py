@@ -51,13 +51,18 @@ class AggQuery(dict):
         return self._children
 
     def addSubAggregation(self, aggQuery):
-        """Add a sub aggregation
+        """Add (a) sub aggregation(s)
+        Parameters:
+            aggQuery                    AggQuery or a tuple/list of AggQuery
         """
         if not self.SUPPORT_SUB_AGG:
             raise ValueError('Aggregation [%s] donnot support sub aggregation' % self.TYPENAME)
-        if aggQuery.name in self._children:
-            raise ValueError('Conflict aggregation name [%s]' % aggQuery.name)
-        self._children[aggQuery.name] = aggQuery
+        if not isinstance(aggQuery, (tuple, list)):
+            aggQuery = (aggQuery, )
+        for q in aggQuery:
+            if q.name in self._children:
+                raise ValueError('Conflict aggregation name [%s]' % q.name)
+            self._children[q.name] = q
 
 # -*- ---------- Metrics aggregations --------- -*-
 

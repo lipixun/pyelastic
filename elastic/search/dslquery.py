@@ -125,10 +125,9 @@ class TermsQuery(DslQuery):
     def __init__(self, field, values, boost = None, matchedName = None):
         """Create a new TermsQuery
         """
-        body = { 'value': values }
+        body = { field: values }
         if not boost is None:
             body['boost'] = boost
-        body = { field: body }
         # Super
         super(TermsQuery, self).__init__('terms', body, matchedName)
 
