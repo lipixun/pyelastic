@@ -1,0 +1,3 @@
+# The install configuration
+config:
+    mode: pip
