@@ -34,6 +34,11 @@ class Index(object):
         """
         return 'Index [%s] Docs [%s]' % (self.name, ','.join(self.docs.iterkeys()) if self.docs else '')
 
+    def __getitem__(self, doc):
+        """Get document
+        """
+        return self.docs[doc]
+
 class Document(object):
     """The document
     """
@@ -89,6 +94,11 @@ class DocCorrelation(object):
         """
         self.path = path
 
+    def __len__(self):
+        """Get the length of this relation
+        """
+        return len(self.path)
+
     def reverse(self):
         """Get the reverse one
         """
@@ -131,4 +141,3 @@ class DocCorrelation(object):
                 raise ValueError('Unknown relation type [%s]' % t)
         # Done
         return DocCorrelation(path)
-

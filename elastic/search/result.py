@@ -43,6 +43,8 @@ class Result(dict):
                 return hits
             else:
                 return hits
+        else:
+            return tuple()
 
     @property
     def aggs(self):
@@ -113,5 +115,3 @@ class HitItem(dict):
                 return innerHits
             else:
                 return innerHits
-
-
