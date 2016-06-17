@@ -29,6 +29,12 @@ BOOST_MODE_MIN      = 'min'
 MATCH_OPT_AND       = 'and'
 MATCH_OPT_OR        = 'or'
 
+MULTI_MATCH_TYPE_BEST_FIELDS        = 'best_fields'
+MULTI_MATCH_TYPE_MOST_FIELDS        = 'most_fields'
+MULTI_MATCH_TYPE_CROSS_FIELDS       = 'cross_fields'
+MULTI_MATCH_TYPE_PHRASE             = 'phrase'
+MULTI_MATCH_TYPE_PHRASE_PREFIX      = 'phrase_prefix'
+
 class DslQuery(dict):
     """The dsl query root object
     """
@@ -100,6 +106,27 @@ class MatchQuery(DslQuery):
         """Get the top level definition for the query
         """
         return self.body.values()[0]
+
+class MultiMatchQuery(DslQuery):
+    """The multi match query
+    """
+    def __init__(self, fields, query, type = None, operator = None, tieBreaker = None, minimumShouldMatch = None, matchedName = None):
+        """Create a new MultiMatchQuery
+        """
+        body = {
+            'fields': fields,
+            'query': query
+        }
+        if type:
+            body['type'] = type
+        if operator:
+            body['operator'] = operator
+        if not tieBreaker is None:
+            body['tie_breaker'] = tieBreaker
+        if not minimumShouldMatch is None:
+            body['minimum_should_match'] = minimumShouldMatch
+        # Super
+        super(MultiMatchQuery, self).__init__('multi_match', body, matchedName)
 
 class TermQuery(DslQuery):
     """The term query
@@ -444,4 +471,3 @@ class HasParentQuery(DslQuery):
         """Set the inner hits
         """
         self.body['inner_hits'] = value
-
