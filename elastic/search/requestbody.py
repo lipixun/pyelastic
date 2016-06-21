@@ -62,3 +62,46 @@ class Highlighter(dict):
         # Super
         super(Highlighter, self).__init__(**attrs)
 
+class SearchRequest(dict):
+    """The search request
+    """
+    def __init__(self, query = None, fields = None, highlights = None, aggs = None):
+        """Create a new SearchRequest
+        """
+        body = {}
+        if query:
+            body['query'] = query
+        if fields:
+            body['fielddata_fields'] = fields
+        if highlights:
+            body['highlight'] = { 'fields': highlights }
+        if aggs:
+            body['aggs'] = aggs
+        # Super
+        super(SearchRequest, self).__init__(**body)
+
+    @property
+    def query(self):
+        """Get the query
+        """
+        return self.get('query')
+
+    @property
+    def fields(self):
+        """Get the fiels
+        """
+        return self.get('fielddata_fields')
+
+    @property
+    def highlights(self):
+        """Get the highlights
+        """
+        highlight = self.get('highlight')
+        if highlight:
+            return highlight.get('fields')
+
+    @property
+    def aggs(self):
+        """Get the aggs
+        """
+        return self.get('aggs')

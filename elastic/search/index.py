@@ -37,7 +37,15 @@ class Index(object):
     def __getitem__(self, doc):
         """Get document
         """
-        return self.docs[doc]
+        return self.docs.get(doc)
+
+    def getRelation(self, fromDoc, toDoc):
+        """Get the relation between doc
+        """
+        document = self[fromDoc]
+        if not document:
+            return
+        return document.correlate(toDoc)
 
 class Document(object):
     """The document
@@ -83,8 +91,7 @@ class Document(object):
                         visitedDocs.add(childDoc.name)
         # Nothing found
 
-ParentPathNode = namedtuple('Parent', 'name')
-ChildPathNode = namedtuple('Child', 'name')
+PathNode = namedtuple('PathNode', 'type,name')
 
 class DocCorrelation(object):
     """The document correlation
@@ -119,12 +126,12 @@ class DocCorrelation(object):
         Returns:
             The DslQuery (The HasParentQuery or HasChildQuery)
         """
-        # TODO: Add inner hits chain implementation
         for node in reversed(self.path):
-            if isinstance(node, ParentPathNode):
+            if node.type == 'parent':
                 query = HasParentQuery(node.name, query, scoreMode, innerHits)
             else:
                 query = HasChildQuery(node.name, query, scoreMode, minChildren, maxChildren, innerHits)
+        # Done
         return query
 
     @classmethod
@@ -133,11 +140,6 @@ class DocCorrelation(object):
         """
         path = []
         for t, name in relations:
-            if t == 'parent':
-                path.append(ParentPathNode(name))
-            elif t == 'child':
-                path.append(ChildPathNode(name))
-            else:
-                raise ValueError('Unknown relation type [%s]' % t)
+            path.append(PathNode(t, name))
         # Done
         return DocCorrelation(path)
