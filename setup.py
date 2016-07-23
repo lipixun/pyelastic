@@ -23,10 +23,6 @@ setup(
     author_email = 'lipixun@outlook.com',
     url = 'https://github.com/lipixun/pyelastic',
     packages = find_packages(),
-    package_data = {
-        'elastic': [
-            'VERSION'
-        ] },
     install_requires = requirements,
     description = 'The elastic lib',
     long_description = open('README.md').read(),
