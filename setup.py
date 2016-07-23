@@ -13,25 +13,14 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-from datetime import datetime
-
-import elastic
-
 from setuptools import setup, find_packages
 
 requirements = [ x.strip() for x in open('requirements.txt').readlines() ]
 
-# Fix up the version
-version = elastic.__version__
-if len(version.split('.')) < 3:
-    version = '%s.%s' % (version, datetime.now().strftime('%s'))
-    elastic.setVersion(version)
-
 setup(
     name = 'pyelastic',
-    version = version,
     author = 'lipixun',
-    author_email = 'lipixun@iyoudoctor.com',
+    author_email = 'lipixun@outlook.com',
     url = 'https://github.com/lipixun/pyelastic',
     packages = find_packages(),
     install_requires = requirements,
