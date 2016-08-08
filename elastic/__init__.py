@@ -4,3 +4,4 @@
 """The python elastic bindings
 """
 
+__version__ = "1.0"

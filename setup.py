@@ -11,20 +11,22 @@
 
 import sys
 reload(sys)
-sys.setdefaultencoding('utf8')
+sys.setdefaultencoding("utf8")
 
 from setuptools import setup, find_packages
 
-requirements = [ x.strip() for x in open('requirements.txt').readlines() ]
+requirements = [ x.strip() for x in open("requirements.txt").readlines() ]
+
+import elastic
 
 setup(
-    name = 'pyelastic',
-    author = 'lipixun',
-    author_email = 'lipixun@outlook.com',
-    url = 'https://github.com/lipixun/pyelastic',
+    name = "pyelastic",
+    version = elastic.__version__,
+    author = "lipixun",
+    author_email = "lipixun@outlook.com",
+    url = "https://github.com/lipixun/pyelastic",
     packages = find_packages(),
     install_requires = requirements,
-    description = 'The elastic lib',
-    long_description = open('README.md').read(),
+    description = "The elastic lib",
+    long_description = open("README.md").read(),
 )
-
