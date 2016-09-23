@@ -8,6 +8,7 @@
     Description:
 
 """
+from aggsresult import AggsResult
 
 class Result(dict):
     """The elasticsearch result
@@ -45,6 +46,13 @@ class Result(dict):
                 return hits
         else:
             return tuple()
+
+    @property
+    def aggsResult(self):
+        if self.get('aggregations'):
+            return AggsResult(self.get('aggregations'))
+        else:
+            return None
 
     @property
     def aggs(self):
