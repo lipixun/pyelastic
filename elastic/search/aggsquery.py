@@ -128,10 +128,14 @@ class DateHistogramAgg(AggQuery):
     """
     TYPENAME = 'date_histogram'
 
-    def __init__(self, name, field, interval, format = None, children = None):
+    def __init__(self, name, field, interval, format = None, children = None, minDocCount = None, extendedBounds = None):
         """Create a new DateHistogramAgg object
         """
         body = { 'field': field, 'interval': interval }
+        if minDocCount is not None:
+            body['min_doc_count'] = minDocCount
+        if extendedBounds:
+            body['extended_bounds'] = extendedBounds
         if format:
             body['format'] = format
         # Super
