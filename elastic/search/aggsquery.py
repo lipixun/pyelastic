@@ -66,6 +66,33 @@ class AggQuery(dict):
 
 # -*- ---------- Metrics aggregations --------- -*-
 
+class CardinalityAgg(AggQuery):
+    """CardinalityAgg"""
+    TYPENAME="cardinality"
+    SUPPORT_SUB_AGG = False
+
+    def __init__(self, name, field = None, script = None, missing = None, precision_threshold = None):
+        """
+            @Brief __init__
+            @Param name:
+            @Param field: field to count
+            @Param script:
+            @Param missing: missing value is ignored by default
+            @Param precision_threshold: default to 3000
+        """
+        body = {}
+        if field:
+            body['field'] = field
+        if script:
+            body['script'] = script
+        if missing:
+            body['missing'] = missing
+        if precision_threshold is not None:
+            body['precision_threshold'] = precision_threshold
+
+        super(CardinalityAgg, self).__init__(name, body)
+
+
 class AvgAgg(AggQuery):
     """The avg aggregation
     """
@@ -128,10 +155,14 @@ class DateHistogramAgg(AggQuery):
     """
     TYPENAME = 'date_histogram'
 
-    def __init__(self, name, field, interval, format = None, children = None):
+    def __init__(self, name, field, interval, format = None, children = None, minDocCount = None, extendedBounds = None):
         """Create a new DateHistogramAgg object
         """
         body = { 'field': field, 'interval': interval }
+        if minDocCount is not None:
+            body['min_doc_count'] = minDocCount
+        if extendedBounds:
+            body['extended_bounds'] = extendedBounds
         if format:
             body['format'] = format
         # Super
@@ -176,10 +207,12 @@ class FiltersAgg(AggQuery):
 class HistogramAgg(AggQuery):
     """The histogram aggregation
     """
-    def __init__(self, name, interval, minDocCount = None, extendedBounds = None, order = None, keyed = None, missing = None, children = None):
+    TYPENAME = 'histogram'
+
+    def __init__(self, name, field, interval, minDocCount = None, extendedBounds = None, order = None, keyed = None, missing = None, children = None):
         """Create a new HistogramAgg
         """
-        body = { 'interval': interval }
+        body = { 'field': field, 'interval': interval }
         if not minDocCount is None:
             body['min_doc_count'] = minDocCount
         if extendedBounds:
