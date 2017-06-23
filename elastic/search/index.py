@@ -76,6 +76,7 @@ class Document(object):
         while visitingQueue:
             doc, relations = visitingQueue.pop(0)
             if doc.name == name:
+                #relations example: [("child","es_emr")]
                 return DocCorrelation.fromRelations(relations)
             if doc.parent and not doc.parent.name in visitedDocs:
                 newRelations = list(relations)
