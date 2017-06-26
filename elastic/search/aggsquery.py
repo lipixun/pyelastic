@@ -155,7 +155,7 @@ class DateHistogramAgg(AggQuery):
     """
     TYPENAME = 'date_histogram'
 
-    def __init__(self, name, field, interval, format = None, children = None, minDocCount = None, extendedBounds = None):
+    def __init__(self, name, field, interval, format = None, children = None, minDocCount = None, extendedBounds = None, timeZone = None):
         """Create a new DateHistogramAgg object
         """
         body = { 'field': field, 'interval': interval }
@@ -165,6 +165,8 @@ class DateHistogramAgg(AggQuery):
             body['extended_bounds'] = extendedBounds
         if format:
             body['format'] = format
+        if timeZone:
+            body['time_zone'] = timeZone
         # Super
         super(DateHistogramAgg, self).__init__(name, body, children)
 
