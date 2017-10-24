@@ -23,11 +23,12 @@ SCORE_MODE_AVG = 'avg'
 class Index(object):
     """The index
     """
-    def __init__(self, name, docs = None):
+    def __init__(self, name, doc = None):
         """Create a new Index
         """
         self.name = name
-        self.docs = docs or {}
+        self.docs = {}
+        self.getAllDocument(doc, self.docs)
 
     def __str__(self):
         """Convert to string
@@ -46,6 +47,17 @@ class Index(object):
         if not document:
             return
         return document.correlate(toDoc)
+
+    def getAllDocument(self, doc, allDict):
+        """ Get all the related documents
+        """
+        if not doc:
+            return
+        if doc.name:
+            allDict[doc.name] = doc
+        if doc.children:
+            for key, child in doc.children.items():
+                self.getAllDocument(child, allDict)
 
 class Document(object):
     """The document
